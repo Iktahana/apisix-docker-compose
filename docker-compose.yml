@@ -12,6 +12,7 @@ services:
       - "2379:2379"
     volumes:
       - etcd-data:/bitnami/etcd
+    restart: always
 
   apisix:
     image: apache/apisix:latest
@@ -25,6 +26,7 @@ services:
     ports:
       - "9080:9080"
       - "9180:9180"
+    restart: always
 
   dashboard:
     image: apache/apisix-dashboard:latest
