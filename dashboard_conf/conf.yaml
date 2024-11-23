@@ -27,13 +27,3 @@ authentication:
       password: admin
     - username: user
       password: user
-# Grafana configuration
-grafana:
-  url: http://grafana:3000
-  dashboards:
-    - name: API Gateway Dashboard
-      uid: admin
-  datasources:
-    - name: Prometheus
-      type: prometheus
-      url: http://prometheus:9090
