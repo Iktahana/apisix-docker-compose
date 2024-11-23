@@ -1,11 +1,10 @@
 # Quick install Apisix
 
-# Step.1
+## (GCP)Debian
 
-Add environment variables through cloud services, etc.
-
-```dotenv
-APISIX_ADMIN_KEY=X8T9Ad7okkxCK1EcrOUcH9tPiSvyEPId
-APISIX_ADMIN_PASSWORD=sZppxEQ6uXDNlvsF
-APISIX_ADMIN_USER=admin
+```shell
+sudo apt install git -y
+git clone https://github.com/Iktahana/apisix-docker-compose.git
+cd apisix-docker-compose
+sudo sh ./install.sh
 ```
