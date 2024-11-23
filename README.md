@@ -6,5 +6,5 @@
 sudo apt install git -y
 git clone https://github.com/Iktahana/apisix-docker-compose.git
 cd apisix-docker-compose
-sudo su sh ./install.sh
+sudo sh ./install.sh
 ```
