@@ -22,3 +22,13 @@ git clone https://github.com/Iktahana/apisix-docker-compose.git
 cd apisix-docker-compose
 sudo sh ./install.sh
 ```
+
+## Update
+
+```shell
+git fetch --all           
+git reset --hard origin/main
+git stash                # Save current changes
+git pull                 # Pull remote updates
+git stash pop
+```
