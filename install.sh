@@ -24,6 +24,7 @@ sudo apt install python3 python3-pip -y
 # Create directory for etcd data and set permissions
 sudo mkdir -p /mnt/data/etcd-data
 sudo chown -R docker:docker /mnt/data/etcd-data
+sudo chown -R 764 /mnt/data/etcd-data
 
 # Check Docker and Python versions
 sudo docker --version
