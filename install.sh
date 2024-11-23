@@ -19,5 +19,6 @@ sudo docker compose up -d
 
 sudo docker ps
 
-curl --request GET -sL --url 'http://localhost:80'
-curl --request GET -sL --url 'http://localhost:9000'
+
+curl http://localhost:9000
+curl http://localhost:80
