@@ -10,3 +10,12 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docke
 sudo apt update -y
 sudo snap install docker -y
 sudo docker --version
+
+python update_dasboard_conf.py
+
+docker compose up -d
+
+curl --request GET -sL \
+     --url 'http://localhost:80'
+curl curl --request GET -sL \
+     --url 'http://localhost:9000'

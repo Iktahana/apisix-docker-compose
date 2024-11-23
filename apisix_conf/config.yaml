@@ -1,154 +1,190 @@
----
+apisix:
+  data_encryption:
+    enable_encrypt_fields: true
+  delete_uri_tail_slash: false
+  disable_sync_configuration_during_start: false
+  enable_admin: true
+  enable_control: true
+  enable_dev_mode: false
+  enable_http2: true
+  enable_ipv6: true
+  enable_resolv_search_opt: true
+  enable_reuseport: true
+  enable_server_tokens: true
+  events:
+    module: lua-resty-events
+  extra_lua_cpath: ''
+  extra_lua_path: ''
+  node_listen: 80
+  normalize_uri_like_servlet: false
+  proxy_cache:
+    cache_ttl: 10s
+    zones:
+    - cache_levels: '1:2'
+      disk_path: /tmp/disk_cache_one
+      disk_size: 1G
+      memory_size: 50m
+      name: disk_cache_one
+    - memory_size: 50m
+      name: memory_cache
+  proxy_mode: http
+  resolver_timeout: 5
+  router:
+    http: radixtree_host_uri
+    ssl: radixtree_sni
+  show_upstream_status_in_response_header: false
+  ssl:
+    enable: true
+    listen:
+    - enable_http3: false
+      port: 9443
+    ssl_ciphers: ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384
+    ssl_protocols: TLSv1.2 TLSv1.3
+    ssl_session_tickets: false
 deployment:
   admin:
     admin_api_version: v3
-    enable_admin_cors: true
-    admin_key_required: true
     admin_key:
-    - key: mgLrNYHfHecHGlmYrTigDFSdiWrPeclT
-      role: admin
+    - key: Bt7X91fbFiqAKJmWcgZ1zz89wc0fjGOgX5kHHknQ0-c
       name: admin
-    allow_admin:
-    - 0.0.0.0/24
+      role: admin
+    admin_key_required: true
     admin_listen:
-      port: 9180
       ip: 0.0.0.0
+      port: 9180
+    allow_admin:
+    - 10.0.0.0/8
+    - 172.16.0.0/12
+    - 192.168.0.0/16
+    enable_admin_cors: true
+  config_provider: etcd
+  etcd:
+    host:
+    - http://etcd:2379
+    prefix: /apisix
+    startup_retry: 2
+    timeout: 30
+    tls:
+      verify: true
+    watch_timeout: 50
   role: traditional
   role_traditional:
     config_provider: etcd
-  config_provider: etcd
-  etcd:
-    tls:
-      verify: true
-    startup_retry: 2
-    timeout: 30
-    host:
-    - http://etcd:2379
-    watch_timeout: 50
-    prefix: /apisix
+etcd:
+  host:
+  - http://etcd:2379
+  prefix: /apisix
+  startup_retry: 2
+  timeout: 30
+  tls:
+    verify: true
+  watch_timeout: 50
+graphql:
+  max_size: 1048576
 nginx_config:
-  http_server_location_configuration_snippet: ''
-  http_admin_configuration_snippet: ''
-  error_log: logs/error.log
-  stream_configuration_snippet: ''
-  error_log_level: warn
-  worker_processes: auto
   enable_cpu_affinity: false
-  worker_rlimit_nofile: 20480
-  worker_shutdown_timeout: 240s
-  max_pending_timers: 16384
-  max_running_timers: 4096
-  meta:
-    lua_shared_dict:
-      prometheus-metrics: 15m
+  error_log: logs/error.log
+  error_log_level: warn
+  event:
+    worker_connections: 10620
   http:
-    access_log_buffer: 16384
-    keepalive_timeout: 60s
-    client_header_timeout: 60s
-    client_body_timeout: 60s
-    client_max_body_size: 0
-    send_timeout: 10s
-    underscores_in_headers: 'on'
-    real_ip_header: X-Real-IP
-    enable_access_log: true
     access_log: logs/access.log
+    access_log_buffer: 16384
     access_log_format: $remote_addr - $remote_user [$time_local] $http_host "$request"
       $status $body_bytes_sent $request_time "$http_referer" "$http_user_agent" $upstream_addr
       $upstream_status $upstream_response_time "$upstream_scheme://$upstream_host$upstream_uri"
+    access_log_format_escape: default
+    charset: utf-8
+    client_body_timeout: 60s
+    client_header_timeout: 60s
+    client_max_body_size: 0
+    enable_access_log: true
+    keepalive_timeout: 60s
+    lua_shared_dict:
+      access-tokens: 1m
+      balancer-ewma: 10m
+      balancer-ewma-last-touched-at: 10m
+      balancer-ewma-locks: 10m
+      cas-auth: 10m
+      discovery: 1m
+      etcd-cluster-health-check: 10m
+      ext-plugin: 1m
+      internal-status: 10m
+      introspection: 10m
+      jwks: 1m
+      lrucache-lock: 10m
+      ocsp-stapling: 10m
+      plugin-api-breaker: 10m
+      plugin-limit-conn: 10m
+      plugin-limit-conn-redis-cluster-slot-lock: 1m
+      plugin-limit-count: 10m
+      plugin-limit-count-redis-cluster-slot-lock: 1m
+      plugin-limit-req: 10m
+      plugin-limit-req-redis-cluster-slot-lock: 1m
+      prometheus-metrics: 10m
+      tars: 1m
+      tracing_buffer: 10m
+      upstream-healthcheck: 10m
+      worker-events: 10m
+    proxy_ssl_server_name: true
+    real_ip_from:
+    - 127.0.0.1
+    - 'unix:'
+    real_ip_header: X-Real-IP
+    real_ip_recursive: 'off'
+    send_timeout: 10s
+    underscores_in_headers: 'on'
     upstream:
       keepalive: 320
       keepalive_requests: 1000
       keepalive_timeout: 60s
     variables_hash_max_size: 2048
-    lua_shared_dict:
-      internal-status: 10m
-      upstream-healthcheck: 10m
-      worker-events: 10m
-      lrucache-lock: 10m
-      balancer-ewma: 10m
-      balancer-ewma-locks: 10m
-      balancer-ewma-last-touched-at: 10m
-      etcd-cluster-health-check: 10m
-      plugin-limit-conn: 10m
-      plugin-limit-conn-redis-cluster-slot-lock: 1m
-      plugin-limit-req-redis-cluster-slot-lock: 1m
-      plugin-limit-req: 10m
-      plugin-limit-count: 10m
-      plugin-limit-count-redis-cluster-slot-lock: 1m
-      prometheus-metrics: 10m
-      plugin-api-breaker: 10m
-      discovery: 1m
-      jwks: 1m
-      introspection: 10m
-      access-tokens: 1m
-      tracing_buffer: 10m
-      tars: 1m
-      cas-auth: 10m
-      ocsp-stapling: 10m
-      ext-plugin: 1m
-    charset: utf-8
-    access_log_format_escape: default
-    real_ip_recursive: 'off'
-    real_ip_from:
-    - 127.0.0.1
-    - 'unix:'
-    proxy_ssl_server_name: true
+  http_admin_configuration_snippet: ''
+  http_configuration_snippet: ''
   http_end_configuration_snippet: ''
-  event:
-    worker_connections: 10620
+  http_server_configuration_snippet: ''
+  http_server_location_configuration_snippet: ''
+  main_configuration_snippet: ''
+  max_pending_timers: 16384
+  max_running_timers: 4096
+  meta:
+    lua_shared_dict:
+      prometheus-metrics: 15m
   stream:
-    enable_access_log: false
     access_log: logs/access_stream.log
     access_log_format: $remote_addr [$time_local] $protocol $status $bytes_sent $bytes_received
       $session_time
     access_log_format_escape: default
+    enable_access_log: false
     lua_shared_dict:
+      etcd-cluster-health-check-stream: 10m
       lrucache-lock-stream: 10m
       plugin-limit-conn-stream: 10m
-      worker-events-stream: 10m
       tars-stream: 1m
-      etcd-cluster-health-check-stream: 10m
-  main_configuration_snippet: ''
-  http_configuration_snippet: ''
-  http_server_configuration_snippet: ''
-etcd:
-  tls:
-    verify: true
-  startup_retry: 2
-  timeout: 30
-  host:
-  - http://etcd:2379
-  watch_timeout: 50
-  prefix: /apisix
+      worker-events-stream: 10m
+  stream_configuration_snippet: ''
+  worker_processes: auto
+  worker_rlimit_nofile: 20480
+  worker_shutdown_timeout: 240s
 plugin_attr:
-  zipkin:
-    set_ngx_var: false
-  proxy-mirror:
-    timeout:
-      send: 60s
-      connect: 60s
-      read: 60s
-  log-rotate:
-    max_size: -1
-    interval: 3600
-    timeout: 10000
-    enable_compression: false
-    max_kept: 168
-  prometheus:
-    export_addr:
-      port: 9091
-      ip: 127.0.0.1
-    metric_prefix: apisix_
-    enable_export_server: true
-    export_uri: /apisix/prometheus/metrics
   dubbo-proxy:
     upstream_multiplex_count: 32
   inspect:
-    hooks_file: /usr/local/apisix/plugin_inspect_hooks.lua
     delay: 3
-  server-info:
-    report_ttl: 60
+    hooks_file: /usr/local/apisix/plugin_inspect_hooks.lua
+  log-rotate:
+    enable_compression: false
+    interval: 3600
+    max_kept: 168
+    max_size: -1
+    timeout: 10000
   opentelemetry:
+    batch_span_processor:
+      batch_timeout: 2
+      drop_on_queue_full: false
+      inactive_timeout: 1
+      max_export_batch_size: 16
+      max_queue_size: 1024
     collector:
       address: 127.0.0.1:4318
       request_headers:
@@ -156,72 +192,29 @@ plugin_attr:
       request_timeout: 3
     resource:
       service.name: APISIX
-    trace_id_source: x-request-id
     set_ngx_var: false
-    batch_span_processor:
-      drop_on_queue_full: false
-      max_queue_size: 1024
-      batch_timeout: 2
-      inactive_timeout: 1
-      max_export_batch_size: 16
+    trace_id_source: x-request-id
+  prometheus:
+    enable_export_server: true
+    export_addr:
+      ip: 127.0.0.1
+      port: 9091
+    export_uri: /apisix/prometheus/metrics
+    metric_prefix: apisix_
+  proxy-mirror:
+    timeout:
+      connect: 60s
+      read: 60s
+      send: 60s
+  server-info:
+    report_ttl: 60
   skywalking:
-    service_name: APISIX
     endpoint_addr: http://127.0.0.1:12800
     report_interval: 3
     service_instance_name: APISIX Instance Name
-apisix:
-  show_upstream_status_in_response_header: false
-  router:
-    ssl: radixtree_sni
-    http: radixtree_host_uri
-  proxy_mode: http
-  resolver_timeout: 5
-  enable_admin: true
-  enable_reuseport: true
-  disable_sync_configuration_during_start: false
-  normalize_uri_like_servlet: false
-  delete_uri_tail_slash: false
-  enable_dev_mode: false
-  enable_server_tokens: true
-  enable_ipv6: true
-  enable_http2: true
-  extra_lua_path: ''
-  extra_lua_cpath: ''
-  proxy_cache:
-    cache_ttl: 10s
-    zones:
-    - disk_size: 1G
-      disk_path: /tmp/disk_cache_one
-      name: disk_cache_one
-      cache_levels: '1:2'
-      memory_size: 50m
-    - memory_size: 50m
-      name: memory_cache
-  data_encryption:
-    keyring:
-    - qeddd145sfvddff3
-    - edd1c9f0985e76a2
-    enable_encrypt_fields: true
-  enable_control: true
-  ssl:
-    listen:
-    - enable_http3: false
-      port: 9443
-    ssl_protocols: TLSv1.2 TLSv1.3
-    enable: true
-    ssl_ciphers: ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384
-    ssl_session_tickets: false
-  enable_resolv_search_opt: true
-  node_listen: 80
-  events:
-    module: lua-resty-events
-stream_plugins:
-- ip-restriction
-- limit-conn
-- mqtt-proxy
-- syslog
-graphql:
-  max_size: 1048576
+    service_name: APISIX
+  zipkin:
+    set_ngx_var: false
 plugins:
 - real-ip
 - ai
@@ -309,4 +302,8 @@ plugins:
 - serverless-post-function
 - ext-plugin-post-req
 - ext-plugin-post-resp
-...
+stream_plugins:
+- ip-restriction
+- limit-conn
+- mqtt-proxy
+- syslog

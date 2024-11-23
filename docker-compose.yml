@@ -23,9 +23,8 @@ services:
     networks:
       - apisix-network
     ports:
-      - "9080:9080"  # 映射到新的 HTTP 监听端口
-      - "9180:9180"  # Admin API 端口
-#    entrypoint: [ "sh", "-c", "apisix init && apisix start" ]
+      - "9080:9080"
+      - "9180:9180"
 
   dashboard:
     image: apache/apisix-dashboard:latest

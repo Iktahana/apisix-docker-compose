@@ -1,29 +1,24 @@
+authentication:
+  expire_time: 3600
+  secret: secret
+  users:
+  - password: d5EIgHgiO9s61qV_ePn8Xw
+    username: admin
+  - password: C0t9OAD5xewNG9938KO1Cg
+    username: user
 conf:
+  allow_list:
+  - 0.0.0.0/0
+  etcd:
+    endpoints:
+    - etcd:2379
   listen:
     host: 0.0.0.0
     port: 9000
-
-  allow_list:
-    - 0.0.0.0/0
-
-  etcd:
-    endpoints:
-      - etcd:2379
   log:
-    error_log:
-      level: warn
-      file_path:
-        logs/error.log
     access_log:
-      file_path:
-        logs/access.log
+      file_path: logs/access.log
       max_cpu: 0
-authentication:
-  secret:
-    secret
-  expire_time: 3600
-  users:
-    - username: admin
-      password: admin
-    - username: user
-      password: user
+    error_log:
+      file_path: logs/error.log
+      level: warn
