@@ -47,6 +47,10 @@ services:
 volumes:
   etcd-data:
     driver: local
+    driver_opts:
+      type: none
+      device: /mnt/data/etcd-data
+      o: bind
 
 networks:
   apisix-network:
