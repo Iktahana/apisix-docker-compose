@@ -43,6 +43,8 @@ services:
       - apisix-network
     ports:
       - "9000:9000"
+    stdin_open: true
+    tty: true
 
 volumes:
   etcd-data:
