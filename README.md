@@ -32,4 +32,6 @@ git stash                # Save current changes
 git pull                 # Pull remote updates
 git stash pop
 sudo docker compose up -d --bulid
+docker compose down
+docker compose up --build -d
 ```

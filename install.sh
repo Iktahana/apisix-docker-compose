@@ -33,7 +33,7 @@ python3 --version
 python3 update_dasboard_conf.py
 
 # Start Docker containers using Docker Compose
-sudo docker compose up -d --bulid
+sudo docker compose up -d
 
 # List running Docker containers
 sudo docker ps
