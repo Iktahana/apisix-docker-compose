@@ -31,4 +31,5 @@ git reset --hard origin/main
 git stash                # Save current changes
 git pull                 # Pull remote updates
 git stash pop
+sudo docker compose up -d --bulid
 ```
