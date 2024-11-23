@@ -15,7 +15,9 @@ sudo docker --version
 python3 --version
 python3 update_dasboard_conf.py
 
-docker compose up -d
+sudo docker compose up -d
+
+sudo docker ps
 
 curl --request GET -sL --url 'http://localhost:80'
 curl --request GET -sL --url 'http://localhost:9000'
