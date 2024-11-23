@@ -24,7 +24,7 @@ services:
     networks:
       - apisix-network
     ports:
-      - "9080:9080"
+      - "80:80"
       - "9180:9180"
     restart: always
 
