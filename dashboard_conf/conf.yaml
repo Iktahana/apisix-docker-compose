@@ -1,0 +1,39 @@
+conf:
+  listen:
+    host: 0.0.0.0
+    port: 9000
+
+  allow_list:
+    - 0.0.0.0/0
+
+  etcd:
+    endpoints:
+      - etcd:2379
+  log:
+    error_log:
+      level: warn
+      file_path:
+        logs/error.log
+    access_log:
+      file_path:
+        logs/access.log
+      max_cpu: 0
+authentication:
+  secret:
+    secret
+  expire_time: 3600
+  users:
+    - username: admin
+      password: admin
+    - username: user
+      password: user
+# Grafana configuration
+grafana:
+  url: http://grafana:3000
+  dashboards:
+    - name: API Gateway Dashboard
+      uid: admin
+  datasources:
+    - name: Prometheus
+      type: prometheus
+      url: http://prometheus:9090

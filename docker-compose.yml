@@ -1,41 +1,52 @@
-version: "3.8"
-
 services:
   etcd:
     image: bitnami/etcd:latest
     container_name: etcd
-    ports:
-      - "2379:2379" # etcd API
-      - "2380:2380"
     environment:
       - ALLOW_NONE_AUTHENTICATION=yes
-      - ETCD_ADVERTISE_CLIENT_URLS=http://0.0.0.0:2379
+      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379
       - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
-      - ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380
+    networks:
+      - apisix-network
+    ports:
+      - "2379:2379"
+    volumes:
+      - etcd-data:/bitnami/etcd
 
   apisix:
     image: apache/apisix:latest
     container_name: apisix
-    ports:
-      - "9080:9080" # APISIX default HTTP port
-      - "9443:9443" # APISIX default HTTPS port
-      - "9180:9180" # APISIX Admin API port
     volumes:
-      - ./conf/apisix/config.yaml:/usr/local/apisix/conf/config.yaml
+      - ./apisix_conf/config.yaml:/usr/local/apisix/conf/config.yaml
     depends_on:
       - etcd
-    environment:
-      ETCD_HOST: "etcd:2379"
+    networks:
+      - apisix-network
+    ports:
+      - "9080:9080"  # 映射到新的 HTTP 监听端口
+      - "9180:9180"  # Admin API 端口
+#    entrypoint: [ "sh", "-c", "apisix init && apisix start" ]
 
   dashboard:
     image: apache/apisix-dashboard:latest
-    container_name: apisix-dashboard
-    ports:
-      - "9000:9000" # Dashboard port
-    depends_on:
-      - etcd
-      - apisix
+    container_name: apisix_dashboard
     volumes:
-      - ./conf/dashboard/config.yaml:/usr/local/apisix-dashboard/conf/conf.yaml
+      - ./dashboard_conf/conf.yaml:/usr/local/apisix-dashboard/conf/conf.yaml
+    depends_on:
+      - apisix
     environment:
-      ETCD_HOST: "etcd:2379" # Dashboard 使用 etcd 的地址
+      - DASHBOARD_ADMIN_API=http://apisix:9180
+      - DASHBOARD_API_KEY=admin
+      - DASHBOARD_API_SECRET=admin
+    networks:
+      - apisix-network
+    ports:
+      - "9000:9000"
+
+volumes:
+  etcd-data:
+    driver: local
+
+networks:
+  apisix-network:
+    driver: bridge
