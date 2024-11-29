@@ -8,8 +8,6 @@ services:
       - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
     networks:
       - apisix-network
-    ports:
-      - "2379:2379"
     volumes:
       - etcd-data:/bitnami/etcd
     restart: always
@@ -25,7 +23,6 @@ services:
       - apisix-network
     ports:
       - "80:80"
-      - "9180:9180"
     restart: always
 
   dashboard:
