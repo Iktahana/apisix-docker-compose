@@ -23,6 +23,8 @@ cd apisix-docker-compose
 sudo sh ./install.sh
 ```
 
+Password's config is on thedashboard_conf/conf.yaml. Don't forget to change it.
+
 ## Update
 
 ```shell
